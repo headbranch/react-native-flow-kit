@@ -66,10 +66,17 @@ export function Target({
 
     return new Promise<void>((resolve) => {
       const doMeasure = () => {
-        view?.measureInWindow(
-          (x: number, y: number, width: number, height: number) => {
+        view?.measure(
+          (
+            _x: number,
+            _y: number,
+            width: number,
+            height: number,
+            pageX,
+            pageY
+          ) => {
             if (width !== 0 || height !== 0) {
-              setMeasure({ x, y, width, height });
+              setMeasure({ x: pageX, y: pageY, width, height });
             }
             resolve();
           }
@@ -262,7 +269,12 @@ export function Target({
     return (
       <>
         {child}
-        <Modal transparent={true} animationType="fade" visible={isActive}>
+        <Modal
+          transparent={true}
+          statusBarTranslucent
+          animationType="fade"
+          visible={isActive}
+        >
           <View style={{ flex: 1 }}>
             {renderOverlay()}
 
