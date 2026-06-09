@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FlowOptions, FlowStatus, UseFlowReturn } from '../types';
 
-export function createFlow<
+export function useCreateFlow<
   TData extends Record<string, unknown> = Record<string, unknown>,
 >({
   steps,
