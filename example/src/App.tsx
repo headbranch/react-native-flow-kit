@@ -6,6 +6,7 @@ import {
   Alert,
   Dimensions,
   StatusBar,
+  Pressable,
 } from 'react-native';
 import { Flow, useFlow } from 'react-native-flow-kit';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -119,10 +120,18 @@ export default function App() {
         Alert.alert("You're all set!", 'You now know the basics.')
       }
     >
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.screen}>
-        <TaskApp />
-      </SafeAreaView>
+      <Flow.Provider
+        id={'alt'}
+        onStart={() => {
+          console.log('alt flow started');
+        }}
+        steps={['alt_first']}
+      >
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView style={styles.screen}>
+          <TaskApp />
+        </SafeAreaView>
+      </Flow.Provider>
     </Flow.Provider>
   );
 }
@@ -131,6 +140,7 @@ export default function App() {
 
 function TaskApp() {
   const { start, next } = useFlow();
+  const { start: startAlt, finish: finishAlt } = useFlow('alt');
 
   const visibleTasks = TASKS;
 
@@ -138,10 +148,23 @@ function TaskApp() {
     <View style={{ flex: 1 }}>
       {/* ── Header ── */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good morning 👋</Text>
-          <Text style={styles.headerTitle}>My tasks</Text>
-        </View>
+        <Flow.Target
+          step="alt_first"
+          provider="alt"
+          spotlight
+          onOverlayPress={finishAlt}
+        >
+          <Pressable
+            onPress={() => {
+              startAlt();
+            }}
+          >
+            <View>
+              <Text style={styles.greeting}>Good morning 👋</Text>
+              <Text style={styles.headerTitle}>My tasks</Text>
+            </View>
+          </Pressable>
+        </Flow.Target>
 
         <Flow.Target
           step="notifications"

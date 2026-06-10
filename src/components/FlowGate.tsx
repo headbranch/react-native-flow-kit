@@ -65,11 +65,12 @@ function resolveVisibleIndices(
 export function Gate({
   children,
   when,
+  provider,
   showWhenIdle = false,
   showWhenActive = true,
   showWhenFinished = false,
 }: GateProps) {
-  const { currentStep, status, steps } = useFlowContext('Gate');
+  const { currentStep, status, steps } = useFlowContext('Gate', provider);
 
   if (status === 'idle') return showWhenIdle ? children : null;
   if (status === 'finished') return showWhenFinished ? children : null;

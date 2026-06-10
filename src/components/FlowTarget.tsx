@@ -36,13 +36,14 @@ try {
 
 export function Target({
   step,
+  provider,
   spotlight,
   tooltip,
   onOverlayPress,
   children,
   onActive,
 }: TargetProps) {
-  const { currentStep } = useFlowContext('Target');
+  const { currentStep } = useFlowContext('Target', provider);
   const isActive = currentStep === step;
   const { width, height } = useWindowDimensions();
   const spotlightConfig: SpotlightConfig =

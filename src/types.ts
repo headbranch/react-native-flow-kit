@@ -20,6 +20,8 @@ export type FlowStatus = 'idle' | 'active' | 'finished';
 // ─── Target ─────────────────────────────────────────────────────────────
 
 export interface TargetProps {
+  /** The provider ID this target belongs to. */
+  provider?: string;
   /** The step ID this target belongs to. */
   step: string;
   /** The single element to highlight. Must accept a ref. */
@@ -54,7 +56,7 @@ export interface TooltipConfig {
    * When omitted, the side with the most available screen space is chosen.
    */
   side?: TooltipSide;
-  align?: TooltipAlign; // defaults to 'start'
+  align?: TooltipAlign;
   /**
    * Extra gap (in px) on top of the default spacing between the element edge and
    * the tooltip. Can be negative to pull the tooltip closer.
@@ -140,6 +142,7 @@ export type ProviderProps<
    * Explicit step order by id.
    */
   steps: string[];
+  id?: string;
   children: ReactNode;
 };
 
@@ -170,6 +173,10 @@ type WhenRange = {
 
 export type GateProps = {
   children: React.ReactNode;
+  /**
+   * Provider ID
+   */
+  provider?: string;
   /**
    * Show only during specific step(s) or a range.
    */
