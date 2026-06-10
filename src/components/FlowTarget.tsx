@@ -120,7 +120,11 @@ export function Target({
       return;
     }
     onActive?.();
-    scrollAndMeasure();
+     requestAnimationFrame(() => {
+       requestAnimationFrame(() => {
+         scrollAndMeasure();
+       });
+     });
   }, [isActive, scrollAndMeasure]);
 
   const handleLayout = useCallback(() => {
