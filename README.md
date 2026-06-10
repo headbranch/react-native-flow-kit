@@ -23,7 +23,7 @@ import { Flow, useFlow } from 'react-native-flow-kit';
 
 export default function App() {
   return (
-    <Flow.Provider steps={['welcome', 'profile', 'done']} autoStart>
+    <Flow.Provider steps={['welcome', 'profile']} autoStart>
       <MyScreen />
     </Flow.Provider>
   );
@@ -34,11 +34,8 @@ function MyScreen() {
 
   return (
     <>
-      <Flow.Target step="welcome">
-        <WelcomeBanner />
-      </Flow.Target>
-
       <Flow.Gate when="welcome">
+        <WelcomeBanner />
         <Button title="Next" onPress={next} />
       </Flow.Gate>
 
