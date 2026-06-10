@@ -60,7 +60,7 @@ export interface TooltipConfig {
   /**
    * Extra gap (in px) on top of the default spacing between the element edge and
    * the tooltip. Can be negative to pull the tooltip closer.
-   * @default 0
+   * @default 8
    */
   offset?: number;
 }
