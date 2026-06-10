@@ -134,9 +134,9 @@ Conditionally renders children based on flow state.
 | Prop               | Type                                               | Default | Description                                   |
 | ------------------ | -------------------------------------------------- | ------- | --------------------------------------------- |
 | `when`             | `string \| string[] \| { from, until?, exclude? }` | —       | Show only during specific step(s) or a range. |
-| `showWhenIdle`     | `boolean`                                          | true    | Show when the flow has not started.           |
+| `showWhenIdle`     | `boolean`                                          | false   | Show when the flow has not started.           |
 | `showWhenActive`   | `boolean`                                          | true    | Show whenever the flow is active (any step).  |
-| `showWhenFinished` | `boolean`                                          | true    | Show after the flow finishes.                 |
+| `showWhenFinished` | `boolean`                                          | false   | Show after the flow finishes.                 |
 
 ---
 
