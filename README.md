@@ -215,7 +215,7 @@ yarn add react-native-svg
 
 | Property  | Type                                   | Default | Description                                                  |
 | --------- | -------------------------------------- | ------- | ------------------------------------------------------------ |
-| `inset`   | `number \| { x?: number; y?: number }` | `0`     | Extra space around the highlighted element.                  |
+| `inset`   | `number \| { x?: number; y?: number }` | `8`     | Extra space around the highlighted element.                  |
 | `color`   | `ColorValue`                           | `#000`  | The background color of the spotlight overlay.               |
 | `opacity` | `number`                               | `0.5`   | Styles applied to each overlay panel (color, opacity, etc.). |
 
@@ -250,7 +250,7 @@ Tooltips are positioned automatically on the side with the most available screen
 | `component` | `ReactNode`                              | **required** | Content to render inside the tooltip.                                                           |
 | `side`      | `'top' \| 'bottom' \| 'left' \| 'right'` | —            | Side of the element to place the tooltip on. The side with the most space is picked by default. |
 | `align`     | `'start' \| 'center' \| 'end'`           | `center`     | Alignment of the tooltip according to the side its placed in.                                   |
-| `offset`    | `number`                                 | `0`          | Extra gap between the element edge and the tooltip. Can be negative.                            |
+| `offset`    | `number`                                 | `8`          | Extra gap between the element edge and the tooltip. Can be negative.                            |
 
 **Overlay Handling**
 
