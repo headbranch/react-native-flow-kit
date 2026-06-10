@@ -86,14 +86,15 @@ The root component that manages all flow state. Wrap your screen (or the relevan
 
 **Props**
 
-| Prop           | Type                                   | Default             | Description                                                               |
-| -------------- | -------------------------------------- | ------------------- | ------------------------------------------------------------------------- |
-| `steps`        | `string[]`                             | auto (render order) | Ordered list of step IDs.                                                 |
-| `autoStart`    | `boolean`                              | `false`             | Start the flow immediately on mount.                                      |
-| `initialData`  | `Record<string, unknown>`              | `{}`                | Seed data available throughout the flow.                                  |
-| `onStart`      | `(data) => void \| Promise<void>`      | —                   | Called once when the flow starts. Data in callback is always initialData. |
-| `onFinish`     | `(data) => void \| Promise<void>`      | —                   | Called once when the flow completes.                                      |
-| `onStepChange` | `(from: StepRef, to: StepRef) => void` | —                   | Called on every step transition.                                          |
+| Prop           | Type                                   | Default      | Description                                                                                                                                        |
+| -------------- | -------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`                               | —            | Unique identifier for the flow. Can be omitted when the app uses only one flow. If multiple flows are defined, use unique IDs to distinguish them. |
+| `steps`        | `string[]`                             | **required** | Ordered list of step IDs.                                                                                                                          |
+| `autoStart`    | `boolean`                              | `false`      | Start the flow immediately on mount.                                                                                                               |
+| `initialData`  | `Record<string, unknown>`              | `{}`         | Seed data available throughout the flow.                                                                                                           |
+| `onStart`      | `(data) => void \| Promise<void>`      | —            | Called once when the flow starts. Data in callback is always initialData.                                                                          |
+| `onFinish`     | `(data) => void \| Promise<void>`      | —            | Called once when the flow completes.                                                                                                               |
+| `onStepChange` | `(from: StepRef, to: StepRef) => void` | —            | Called on every step transition.                                                                                                                   |
 
 > **`StepRef`** — `{ id: string; index: number }` — A snapshot of a step at the moment of a transition. `id` matches the string passed to `Flow.Target`, and `index` is the zero-based position in the sequence.
 
@@ -131,12 +132,13 @@ Conditionally renders children based on flow state.
 
 **Props**
 
-| Prop               | Type                                               | Default | Description                                   |
-| ------------------ | -------------------------------------------------- | ------- | --------------------------------------------- |
-| `when`             | `string \| string[] \| { from, until?, exclude? }` | —       | Show only during specific step(s) or a range. |
-| `showWhenIdle`     | `boolean`                                          | false   | Show when the flow has not started.           |
-| `showWhenActive`   | `boolean`                                          | true    | Show whenever the flow is active (any step).  |
-| `showWhenFinished` | `boolean`                                          | false   | Show after the flow finishes.                 |
+| Prop               | Type                                               | Default | Description                                                                              |
+| ------------------ | -------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `provider`         | `string`                                           | —       | The ID of the provider associated with this component. Must match a defined provider ID. |
+| `when`             | `string \| string[] \| { from, until?, exclude? }` | —       | Show only during specific step(s) or a range.                                            |
+| `showWhenIdle`     | `boolean`                                          | `false` | Show when the flow has not started.                                                      |
+| `showWhenActive`   | `boolean`                                          | `true`  | Show whenever the flow is active (any step).                                             |
+| `showWhenFinished` | `boolean`                                          | `false` | Show after the flow finishes.                                                            |
 
 ---
 
@@ -157,14 +159,15 @@ Marks a subtree as belonging to a specific step and brings the content into view
 
 **Props**
 
-| Prop             | Type                         | Default  | Description                                                                                   |
-| ---------------- | ---------------------------- | -------- | --------------------------------------------------------------------------------------------- |
-| `step`           | `string`                     | required | The step ID this target belongs to.                                                           |
-| `spotlight`      | `boolean \| SpotlightConfig` | —        | Highlights the step's content. Pass `true` for defaults or a config object for customization. |
-| `tooltip`        | `ReactNode \| TooltipConfig` | —        | Renders a tooltip adjacent to the step's content.                                             |
-| `onOverlayPress` | `() => void`                 | —        | Called when the user taps the overlay when spotlight and/or tooltip is available.             |
-| `onActive`       | `() => void`                 | —        | Called when the element goes into view.                                                       |
-| `children`       | `ReactNode`                  | required | The single element to highlight and/or scrolled to. Must accept a ref.                        |
+| Prop             | Type                         | Default      | Description                                                                                   |
+| ---------------- | ---------------------------- | ------------ | --------------------------------------------------------------------------------------------- |
+| `provider`       | `string`                     | —            | The ID of the provider associated with this component. Must match a defined provider ID.      |
+| `step`           | `string`                     | **required** | The step ID this target belongs to.                                                           |
+| `spotlight`      | `boolean \| SpotlightConfig` | —            | Highlights the step's content. Pass `true` for defaults or a config object for customization. |
+| `tooltip`        | `ReactNode \| TooltipConfig` | —            | Renders a tooltip adjacent to the step's content.                                             |
+| `onOverlayPress` | `() => void`                 | —            | Called when the user taps the overlay when spotlight and/or tooltip is available.             |
+| `onActive`       | `() => void`                 | —            | Called when the element goes into view.                                                       |
+| `children`       | `ReactNode`                  | **required** | The single element to highlight and/or scrolled to. Must accept a ref.                        |
 
 **Spotlight**
 
@@ -195,7 +198,8 @@ yarn add react-native-svg
   step="save-button"
   spotlight={{
     inset: 12,
-    overlayStyle: { backgroundColor: 'rgba(0,0,0,0.75)' },
+    color: "#333333",
+    opacity: 0.75
   }}
 >
   <SaveButton />
@@ -209,10 +213,11 @@ yarn add react-native-svg
 
 **`SpotlightConfig`**
 
-| Property       | Type                                   | Default | Description                                                  |
-| -------------- | -------------------------------------- | ------- | ------------------------------------------------------------ |
-| `inset`        | `number \| { x?: number; y?: number }` | `0`     | Extra space around the highlighted element.                  |
-| `overlayStyle` | `ViewStyle`                            | —       | Styles applied to each overlay panel (color, opacity, etc.). |
+| Property  | Type                                   | Default | Description                                                  |
+| --------- | -------------------------------------- | ------- | ------------------------------------------------------------ |
+| `inset`   | `number \| { x?: number; y?: number }` | `0`     | Extra space around the highlighted element.                  |
+| `color`   | `ColorValue`                           | `#000`  | The background color of the spotlight overlay.               |
+| `opacity` | `number`                               | `0.5`   | Styles applied to each overlay panel (color, opacity, etc.). |
 
 **Tooltips**
 
@@ -240,12 +245,12 @@ Tooltips are positioned automatically on the side with the most available screen
 
 **`TooltipConfig`**
 
-| Option      | Type                                     | Default  | Description                                                          |
-| ----------- | ---------------------------------------- | -------- | -------------------------------------------------------------------- |
-| `component` | `ReactNode`                              | required | Content to render inside the tooltip.                                |
-| `side`      | `'top' \| 'bottom' \| 'left' \| 'right'` | auto     | Side of the element to place the tooltip on.                         |
-| `align`     | `'start' \| 'center' \| 'end'`           | auto     | Alignment of the tooltip according to the side its placed in.        |
-| `offset`    | `number`                                 | `0`      | Extra gap between the element edge and the tooltip. Can be negative. |
+| Option      | Type                                     | Default      | Description                                                                                     |
+| ----------- | ---------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------- |
+| `component` | `ReactNode`                              | **required** | Content to render inside the tooltip.                                                           |
+| `side`      | `'top' \| 'bottom' \| 'left' \| 'right'` | —            | Side of the element to place the tooltip on. The side with the most space is picked by default. |
+| `align`     | `'start' \| 'center' \| 'end'`           | `center`     | Alignment of the tooltip according to the side its placed in.                                   |
+| `offset`    | `number`                                 | `0`          | Extra gap between the element edge and the tooltip. Can be negative.                            |
 
 **Overlay Handling**
 
@@ -323,8 +328,18 @@ function LongForm() {
 Access the flow state and navigation API from anywhere inside a `Flow.Provider`.
 
 ```tsx
+//Reference default flow
 const flow = useFlow();
+
+//Reference specific flow
+const otherFlow = useFlow('other');
 ```
+
+**Parameters:**
+
+| Parameter | Type     | Default | Description                                                                                 |
+| --------- | -------- | ------- | ------------------------------------------------------------------------------------------- |
+| `id`      | `string` | —       | The ID of the flow to reference. Defaults to the nearest parent Flow.Provider when omitted. |
 
 **Returns `UseFlowReturn`**
 
@@ -569,6 +584,91 @@ function HomeContent() {
       </Flow.Target>
       <Flow.Target step="menu" spotlight tooltip={<MenuTip />}>
         <MenuButton />
+      </Flow.Target>
+    </>
+  );
+}
+```
+
+### Multiple flows
+
+```tsx
+function Dashboard() {
+  return (
+    <>
+      <Flow.Provider
+        id="onboarding"
+        steps={['profile', 'workspace', 'invite']}
+        autoStart
+      >
+        <OnboardingTour />
+      </Flow.Provider>
+
+      <Flow.Provider id="analytics" steps={['chart', 'export']}>
+        <AnalyticsTour />
+      </Flow.Provider>
+    </>
+  );
+}
+
+function OnboardingTour() {
+  const { next } = useFlow('onboarding');
+
+  return (
+    <>
+      <Flow.Target
+        step="profile"
+        tooltip={{
+          component: <TourTip text="Complete your profile" onNext={next} />,
+        }}
+      >
+        <ProfileCard />
+      </Flow.Target>
+
+      <Flow.Target
+        step="workspace"
+        tooltip={{
+          component: <TourTip text="Set up your workspace" onNext={next} />,
+        }}
+      >
+        <WorkspaceSettings />
+      </Flow.Target>
+
+      <Flow.Target
+        step="invite"
+        tooltip={{
+          component: <TourTip text="Invite your teammates" onNext={next} />,
+        }}
+      >
+        <InviteButton />
+      </Flow.Target>
+    </>
+  );
+}
+
+function AnalyticsTour() {
+  const { next } = useFlow('analytics');
+
+  return (
+    <>
+      <Flow.Target
+        provider="analytics"
+        step="chart"
+        tooltip={{
+          component: <TourTip text="Track performance trends" onNext={next} />,
+        }}
+      >
+        <AnalyticsChart />
+      </Flow.Target>
+
+      <Flow.Target
+        provider="analytics"
+        step="export"
+        tooltip={{
+          component: <TourTip text="Export your reports" onNext={next} />,
+        }}
+      >
+        <ExportButton />
       </Flow.Target>
     </>
   );
