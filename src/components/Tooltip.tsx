@@ -13,7 +13,7 @@ export default function Tooltip({ config, measure }: TooltipProps) {
     measure,
     side,
     gap,
-    config.align ?? 'start',
+    config.align ?? 'center',
     tooltipSize.height || undefined,
     tooltipSize.width || undefined
   );
