@@ -47,7 +47,7 @@ export function Target({
   const { width, height } = useWindowDimensions();
   const spotlightConfig: SpotlightConfig =
     typeof spotlight === 'object' ? spotlight : {};
-  const { inset, overlayStyle } = spotlightConfig;
+  const { inset, color = '#000', opacity = 0.5 } = spotlightConfig;
   const tooltipConfig = normalizeTooltipToConfig(tooltip);
 
   const wrapperRef = useRef<ViewRef>(null);
@@ -120,11 +120,11 @@ export function Target({
       return;
     }
     onActive?.();
-     requestAnimationFrame(() => {
-       requestAnimationFrame(() => {
-         scrollAndMeasure();
-       });
-     });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollAndMeasure();
+      });
+    });
   }, [isActive, scrollAndMeasure]);
 
   const handleLayout = useCallback(() => {
@@ -140,12 +140,6 @@ export function Target({
 
   const needsModal = !!spotlight || !!tooltip;
   const justTooltip = !spotlight && !!tooltip;
-
-  const overlay = {
-    backgroundColor: justTooltip ? 'transparent' : '#000',
-    opacity: 0.7,
-    ...overlayStyle,
-  };
 
   const child = isValidElement(children)
     ? cloneElement(children as React.ReactElement<any>, {
@@ -223,8 +217,8 @@ export function Target({
               `M 0 0 H ${width} V ${height} H 0 Z`,
               `M ${hole.x} ${hole.y} V ${hole.y + hole.h} H ${hole.x + hole.w} V ${hole.y} Z`,
             ].join(' ')}
-            fill={overlay.backgroundColor}
-            fillOpacity={overlay.opacity ?? 1}
+            fill={justTooltip ? 'transparent' : color}
+            fillOpacity={opacity}
             onPress={onOverlayPress}
           />
         </Svg>
@@ -236,32 +230,44 @@ export function Target({
         <Pressable
           onPress={onOverlayPress}
           style={[
-            { position: 'absolute' },
-            overlay,
+            {
+              position: 'absolute',
+              backgroundColor: justTooltip ? 'transparent' : color,
+              opacity: opacity,
+            },
             { top: 0, left: 0, right: 0, height: hole.y },
           ]}
         />
         <Pressable
           onPress={onOverlayPress}
           style={[
-            { position: 'absolute' },
-            overlay,
+            {
+              position: 'absolute',
+              backgroundColor: justTooltip ? 'transparent' : color,
+              opacity: opacity,
+            },
             { top: hole.y + hole.h, left: 0, right: 0, bottom: 0 },
           ]}
         />
         <Pressable
           onPress={onOverlayPress}
           style={[
-            { position: 'absolute' },
-            overlay,
+            {
+              position: 'absolute',
+              backgroundColor: justTooltip ? 'transparent' : color,
+              opacity: opacity,
+            },
             { top: hole.y, left: 0, width: hole.x, height: hole.h },
           ]}
         />
         <Pressable
           onPress={onOverlayPress}
           style={[
-            { position: 'absolute' },
-            overlay,
+            {
+              position: 'absolute',
+              backgroundColor: justTooltip ? 'transparent' : color,
+              opacity: opacity,
+            },
             { top: hole.y, left: hole.x + hole.w, right: 0, height: hole.h },
           ]}
         />

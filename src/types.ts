@@ -1,10 +1,10 @@
 import type React from 'react';
 import type { Ref, ReactNode, RefObject } from 'react';
 import type {
+  ColorValue,
   ScrollView,
   ScrollViewProps,
   View,
-  ViewStyle,
 } from 'react-native';
 
 // ─── Element rect ─────────────────────────────────────────────────────────────
@@ -37,7 +37,8 @@ export interface TargetProps {
 
 export interface SpotlightConfig {
   inset?: number | { x?: number; y?: number };
-  overlayStyle?: ViewStyle;
+  color?: ColorValue;
+  opacity?: number;
 }
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
