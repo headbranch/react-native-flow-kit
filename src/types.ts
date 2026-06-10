@@ -175,7 +175,7 @@ export type GateProps = {
   when?: string | string[] | WhenRange;
   /**
    * Show when the flow has not started.
-   * @default true
+   * @default false
    */
   showWhenIdle?: boolean;
   /**
@@ -185,7 +185,7 @@ export type GateProps = {
   showWhenActive?: boolean;
   /**
    * Show after the flow finishes.
-   * @default true
+   * @default false
    */
   showWhenFinished?: boolean;
 };
