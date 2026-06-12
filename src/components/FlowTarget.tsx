@@ -67,21 +67,25 @@ export function Target({
 
     return new Promise<void>((resolve) => {
       const doMeasure = () => {
-        view?.measure(
-          (
-            _x: number,
-            _y: number,
-            width: number,
-            height: number,
-            pageX,
-            pageY
-          ) => {
-            if (width !== 0 || height !== 0) {
-              setMeasure({ x: pageX, y: pageY, width, height });
-            }
-            resolve();
-          }
-        );
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            view?.measure(
+              (
+                _x: number,
+                _y: number,
+                width: number,
+                height: number,
+                pageX,
+                pageY
+              ) => {
+                if (width !== 0 || height !== 0) {
+                  setMeasure({ x: pageX, y: pageY, width, height });
+                }
+                resolve();
+              }
+            );
+          });
+        });
       };
 
       if (view && scroll && scrollTo) {
@@ -126,7 +130,7 @@ export function Target({
         scrollAndMeasure();
       });
     });
-  }, [isActive, scrollAndMeasure]);
+  }, [isActive, onActive, scrollAndMeasure]);
 
   const handleLayout = useCallback(() => {
     if (isActiveRef.current) scrollAndMeasure();
