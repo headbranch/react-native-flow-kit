@@ -83,15 +83,15 @@ The root component that manages all flow state. Wrap your screen (or the relevan
 
 **Props**
 
-| Prop           | Type                                   | Default      | Description                                                                                                                                        |
-| -------------- | -------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | `string`                               | —            | Unique identifier for the flow. Can be omitted when the app uses only one flow. If multiple flows are defined, use unique IDs to distinguish them. |
-| `steps`        | `string[]`                             | **required** | Ordered list of step IDs.                                                                                                                          |
-| `autoStart`    | `boolean`                              | `false`      | Start the flow immediately on mount.                                                                                                               |
-| `initialData`  | `Record<string, unknown>`              | `{}`         | Seed data available throughout the flow.                                                                                                           |
-| `onStart`      | `(data) => void \| Promise<void>`      | —            | Called once when the flow starts. Data in callback is always initialData.                                                                          |
-| `onFinish`     | `(data) => void \| Promise<void>`      | —            | Called once when the flow completes.                                                                                                               |
-| `onStepChange` | `(from: StepRef, to: StepRef) => void` | —            | Called on every step transition.                                                                                                                   |
+| Prop           | Type                                     | Default      | Description                                                                                                                                           |
+| -------------- | ---------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`                                 | —            | Unique identifier for the flow. Can be omitted when the app uses only one flow. If multiple flows are defined, use unique IDs to distinguish them.    |
+| `steps`        | `string[]`                               | **required** | Ordered list of step IDs.                                                                                                                             |
+| `autoStart`    | `boolean`                                | `false`      | Start the flow immediately on mount.                                                                                                                  |
+| `initialData`  | `Record<string, unknown>`                | `{}`         | Seed data available throughout the flow.                                                                                                              |
+| `onStart`      | `(initialData) => void \| Promise<void>` | —            | Called once when the flow starts. Data in callback is always `initialData`.                                                                           |
+| `onFinish`     | `(data) => void \| Promise<void>`        | —            | Called once when the flow completes. Data in callback is the final data after any updates from the hook. See the `Data` section for more information. |
+| `onStepChange` | `(from: StepRef, to: StepRef) => void`   | —            | Called on every step transition.                                                                                                                      |
 
 > **`StepRef`** — `{ id: string; index: number }` — A snapshot of a step at the moment of a transition. `id` matches the string passed to `Flow.Target`, and `index` is the zero-based position in the sequence.
 
@@ -118,13 +118,17 @@ Conditionally renders children based on flow state.
 **_The child component is only rendered beflore the flow starts ._**
 
 ```tsx
-<Flow.Gate showWhenIdle>{children}</Flow.Gate>
+<Flow.Gate showWhenIdle showWhenActive={false}>
+  {children}
+</Flow.Gate>
 ```
 
 **_The child component is only rendered when the flow is finished ._**
 
 ```tsx
-<Flow.Gate showWhenFinished>{children}</Flow.Gate>
+<Flow.Gate showWhenFinished showWhenActive={false}>
+  {children}
+</Flow.Gate>
 ```
 
 **Props**
@@ -164,7 +168,9 @@ Marks a subtree as belonging to a specific step and brings the content into view
 | `tooltip`        | `ReactNode \| TooltipConfig` | —            | Renders a tooltip adjacent to the step's content.                                             |
 | `onOverlayPress` | `() => void`                 | —            | Called when the user taps the overlay when spotlight and/or tooltip is available.             |
 | `onActive`       | `() => void`                 | —            | Called when the element goes into view.                                                       |
-| `children`       | `ReactNode`                  | **required** | The single element to highlight and/or scrolled to. Must accept a ref.                        |
+| `children`       | `ReactNode`                  | **required** | The single element to highlight and/or scrolled to. **Must accept a ref**.                    |
+
+> **Note:** The direct child of `Flow.Target` must support refs — either a host component like `View` or `Text`, or a custom component that forwards its ref (`forwardRef` for React < 19, or ref as a prop in React 19+). Passing a component that doesn't support refs will silently break spotlight and scroll positioning.
 
 **Spotlight**
 
@@ -232,7 +238,7 @@ Tooltips are positioned automatically on the side with the most available screen
   tooltip={{
     component: <MyTooltip />,
     side: 'bottom',
-    align: 'center',
+    align: 'start',
     offset: 8,
   }}
 >
@@ -251,7 +257,9 @@ Tooltips are positioned automatically on the side with the most available screen
 
 **Overlay Handling**
 
-Both `spotlight` and `tooltip` render an overlay that covers the screen around the highlighted element. The overlay for spotlight is darkened, while the overlay for tooltip is transparent. This overlay captures all touches, so the user cannot interact with anything outside the active step while it's displayed.
+Both `spotlight` and `tooltip` render an overlay that covers the screen around the highlighted element. The overlay for spotlight is darkened, while the overlay for tooltip is transparent.
+
+The overlay blocks interaction with everything **_outside_** the active step = The highlighted child itself remains fully interactive. You can place inputs, buttons, or gestures inside `Flow.Target` and they will work as normal during that step.
 
 There are two ways to let the user dismiss or advance:
 
@@ -290,7 +298,7 @@ function MyTooltip() {
 
 **Scrollable Flows**
 
-For flows that span a `ScrollView`, use the `ScrollView` export in place of React Native's built-in `ScrollView`. This allows the flow to automatically scroll to bring active steps into view.
+For flows that span a `ScrollView`, use `Flow.ScrollView` in place of React Native's built-in `ScrollView`. It forwards all props and refs, so it's a drop-in replacement — your existing `ref`, `onScroll`, `style` and everything else continue to work as normal.
 
 ```tsx
 import { Flow } from 'react-native-flowkit';
@@ -317,6 +325,8 @@ function LongForm() {
   );
 }
 ```
+
+When a step becomes active, `Flow.ScrollView` automatically scrolls to bring the corresponding `Flow.Target` into view, even when the target is outside the visible area.
 
 ---
 
@@ -461,7 +471,7 @@ Key exported types:
 | `UseFlowReturn<TData>` | Return type of `useFlow`                                                                                              |
 | `FlowStatus`           | `'idle' \| 'active' \| 'finished'`                                                                                    |
 | `TargetProps`          | Props for `Flow.Target`                                                                                               |
-| `Gate`                 | Props for `Flow.Gate`                                                                                                 |
+| `GateProps`            | Props for `Flow.Gate`                                                                                                 |
 | `StepRef`              | Snapshot of a step at transition time — `{ id: string; index: number }`. Passed to `onStepChange` as `from` and `to`. |
 | `SpotlightConfig`      | Config for the `spotlight` prop                                                                                       |
 | `TooltipConfig`        | Config for the `tooltip` prop                                                                                         |
@@ -671,6 +681,8 @@ function AnalyticsTour() {
   );
 }
 ```
+
+> **Note:** The `provider` prop is only required when multiple `Flow.Provider` components are in use. It tells `Flow.Target` and `Flow.Gate` which flow they belong to. When omitted, they attach to the nearest parent `Flow.Provider` — so in single-flow apps you'll never need it.
 
 ---
 
