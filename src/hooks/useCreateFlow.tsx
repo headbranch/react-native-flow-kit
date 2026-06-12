@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FlowOptions, FlowStatus, UseFlowReturn } from '../types';
 
 export function useCreateFlow<
@@ -17,14 +17,26 @@ export function useCreateFlow<
   const [currentIndexState, setCurrentIndex] = useState(0);
   const [data, setData] = useState<TData>(initialData);
 
+  const onStartRef = useRef(onStart);
+  const onFinishRef = useRef(onFinish);
+  const onStepChangeRef = useRef(onStepChange);
+  useEffect(() => {
+    onStartRef.current = onStart;
+    onFinishRef.current = onFinish;
+    onStepChangeRef.current = onStepChange;
+  });
+
+  // Snapshot initialData so inline objects don't bust reset's dep array
+  const initialDataRef = useRef(initialData);
+
   useEffect(() => {
     if (autoStart) {
-      onStart?.(data);
+      onStartRef.current?.(data);
     }
-  }, [autoStart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // mount-only: autoStart is a one-time prop, not reactive
 
   const isRunning = status === 'active';
-
   const currentStep = isRunning ? (steps[currentIndexState] ?? null) : null;
   const currentIndex: number | null = isRunning ? currentIndexState : null;
   const isFirstStep = currentIndexState === 0;
@@ -35,16 +47,19 @@ export function useCreateFlow<
       const from = steps[fromIdx];
       const to = steps[toIdx];
       if (!from || !to) return;
-      onStepChange?.({ id: from, index: fromIdx }, { id: to, index: toIdx });
+      onStepChangeRef.current?.(
+        { id: from, index: fromIdx },
+        { id: to, index: toIdx }
+      );
     },
-    [onStepChange, steps]
+    [steps]
   );
 
   const start = useCallback(() => {
     if (status !== 'idle') return;
     setStatus('active');
-    onStart?.(data);
-  }, [status, onStart, data]);
+    onStartRef.current?.(data);
+  }, [status, data]);
 
   const goTo = useCallback(
     (stepId: string) => {
@@ -72,9 +87,9 @@ export function useCreateFlow<
 
   const finish = useCallback(async () => {
     if (status === 'finished') return;
-    await onFinish?.(data);
+    await onFinishRef.current?.(data);
     setStatus('finished');
-  }, [status, onFinish, data]);
+  }, [status, data]);
 
   const next = useCallback(() => {
     if (__DEV__ && !isRunning) {
@@ -96,8 +111,8 @@ export function useCreateFlow<
   const reset = useCallback(() => {
     setStatus('idle');
     setCurrentIndex(0);
-    setData(initialData);
-  }, [initialData]);
+    setData(initialDataRef.current);
+  }, []);
 
   const updateData = useCallback(
     (patchOrFn: Partial<TData> | ((prev: TData) => Partial<TData>)) => {
