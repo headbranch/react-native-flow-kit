@@ -153,7 +153,7 @@ Marks a subtree as belonging to a specific step and brings the content into view
 <Flow.Target
   step="my-step"
   spotlight={{ inset: 8 }}
-  tooltip={{ component: <MyTooltip />, side: 'bottom', offset: 4 }}
+  tooltip={{ component: <MyTooltip />, side: 'bottom', offset: 16 }}
   onOverlayPress={() => flow.next()}
 >
   <MyComponent />
@@ -241,7 +241,7 @@ Tooltips are positioned automatically on the side with the most available screen
     component: <MyTooltip />,
     side: 'bottom',
     align: 'start',
-    offset: 8,
+    offset: 16,
   }}
 >
   <MyComponent />
@@ -255,7 +255,7 @@ Tooltips are positioned automatically on the side with the most available screen
 | `component` | `ReactNode`                              | **required** | Content to render inside the tooltip.                                                           |
 | `side`      | `'top' \| 'bottom' \| 'left' \| 'right'` | —            | Side of the element to place the tooltip on. The side with the most space is picked by default. |
 | `align`     | `'start' \| 'center' \| 'end'`           | `center`     | Alignment of the tooltip according to the side its placed in.                                   |
-| `offset`    | `number`                                 | `8`          | Extra gap between the element edge and the tooltip. Can be negative.                            |
+| `offset`    | `number`                                 | `16`         | Extra gap between the element edge and the tooltip. Can be negative.                            |
 
 **Overlay Handling**
 
