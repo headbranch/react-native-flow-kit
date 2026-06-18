@@ -8,7 +8,7 @@ export default function Tooltip({ config, measure }: TooltipProps) {
   const [tooltipSize, setTooltipSize] = useState({ width: 0, height: 0 });
 
   const side = config.side ?? autoPickSide(measure);
-  const gap = config.offset ?? 8;
+  const gap = config.offset ?? 16;
   const position = resolveTooltipPosition(
     measure,
     side,

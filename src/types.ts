@@ -76,7 +76,7 @@ export interface TooltipConfig {
   /**
    * Extra gap in points between the element edge and the tooltip.
    * Can be negative to pull the tooltip closer.
-   * @default 8
+   * @default 16
    */
   offset?: number;
 }
