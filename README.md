@@ -1,6 +1,6 @@
 # react-native-flow-kit
 
-https://github.com/user-attachments/assets/465af932-7e85-4ea0-b44e-d8493b5ac93c
+[Watch Demo Video](https://github.com/user-attachments/assets/465af932-7e85-4ea0-b44e-d8493b5ac93c)
 
 A composable library for building multi-step flows in React Native — onboarding tours, feature walkthroughs, guided checklists, and more. Supports spotlight highlighting, contextual tooltips, scroll-aware steps, and flexible sequencing.
 
