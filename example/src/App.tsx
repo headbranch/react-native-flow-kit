@@ -7,9 +7,10 @@ import {
   Dimensions,
   StatusBar,
   Pressable,
+  Modal,
 } from 'react-native';
 import { Flow, useFlow } from 'react-native-flow-kit';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -126,11 +127,14 @@ export default function App() {
           console.log('alt flow started');
         }}
         steps={['alt_first']}
+        onFinish={() => Alert.alert("That's all", 'Second flow done.')}
       >
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={styles.screen}>
-          <TaskApp />
-        </SafeAreaView>
+        <SafeAreaProvider>
+          <SafeAreaView style={styles.screen}>
+            <TaskApp />
+          </SafeAreaView>
+        </SafeAreaProvider>
       </Flow.Provider>
     </Flow.Provider>
   );
@@ -139,7 +143,7 @@ export default function App() {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 function TaskApp() {
-  const { start, next } = useFlow();
+  const { start, next, status } = useFlow();
   const { start: startAlt, finish: finishAlt } = useFlow('alt');
 
   const visibleTasks = TASKS;
@@ -151,6 +155,13 @@ function TaskApp() {
         <Flow.Target
           step="alt_first"
           provider="alt"
+          tooltip={
+            <Tooltip
+              text={
+                'Look at the code. This example is used to show how you can set up multiple flows.'
+              }
+            />
+          }
           spotlight
           onOverlayPress={finishAlt}
         >
@@ -160,8 +171,14 @@ function TaskApp() {
             }}
           >
             <View>
-              <Text style={styles.greeting}>Good morning 👋</Text>
-              <Text style={styles.headerTitle}>My tasks</Text>
+              <Text style={styles.greeting}>
+                {status == 'finished' ? 'Easter Egg' : 'Good morning 👋'}
+              </Text>
+              <Text style={styles.headerTitle}>
+                {status == 'finished'
+                  ? 'Click to start a second flow'
+                  : 'Good morning 👋'}
+              </Text>
             </View>
           </Pressable>
         </Flow.Target>
@@ -172,13 +189,11 @@ function TaskApp() {
           tooltip={{
             component: <Tooltip text="Notifications & reminders." />,
             side: 'left',
-            offset: 8,
           }}
           onOverlayPress={next}
         >
           <TouchableOpacity>
             <Text style={styles.iconText}>🔔</Text>
-            <View style={styles.badge} />
           </TouchableOpacity>
         </Flow.Target>
       </View>
@@ -197,7 +212,6 @@ function TaskApp() {
               component: (
                 <Tooltip text="This will dissappear once the flow is over." />
               ),
-              offset: 8,
             }}
             onOverlayPress={next}
           >
@@ -228,7 +242,6 @@ function TaskApp() {
         tooltip={{
           component: <Tooltip text="Create a new task." />,
           side: 'top',
-          offset: 8,
           align: 'end',
         }}
         onOverlayPress={next}
@@ -240,19 +253,21 @@ function TaskApp() {
 
       {/* ── Welcome ── */}
       <Flow.Gate showWhenIdle showWhenActive={false} showWhenFinished={false}>
-        <View style={styles.welcomeOverlay}>
-          <View style={styles.welcomeCard}>
-            <Text style={styles.welcomeEmoji}>✅</Text>
-            <Text style={styles.welcomeTitle}>Welcome</Text>
-            <Text style={styles.welcomeBody}>
-              Quick tour of the core interactions.
-            </Text>
+        <Modal transparent statusBarTranslucent>
+          <View style={styles.welcomeOverlay}>
+            <View style={styles.welcomeCard}>
+              <Text style={styles.welcomeEmoji}>✅</Text>
+              <Text style={styles.welcomeTitle}>Welcome</Text>
+              <Text style={styles.welcomeBody}>
+                Quick tour of the core interactions.
+              </Text>
 
-            <TouchableOpacity style={styles.startBtn} onPress={start}>
-              <Text style={styles.startBtnText}>Start</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.startBtn} onPress={start}>
+                <Text style={styles.startBtnText}>Start</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </Modal>
       </Flow.Gate>
     </View>
   );
@@ -328,15 +343,6 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 22, fontWeight: '600' },
 
   iconText: { fontSize: 18 },
-  badge: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#D85A30',
-  },
 
   list: { flex: 1 },
 

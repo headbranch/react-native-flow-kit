@@ -83,8 +83,7 @@
     "react-native-builder-bob": "^0.41.0",
     "release-it": "^20.2.0",
     "turbo": "^2.9.16",
-    "typescript": "^6.0.3",
-    "react-native-safe-area-context": "^5.8.0"
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "react": "*",
