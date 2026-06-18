@@ -1,6 +1,6 @@
 {
   "name": "react-native-flow-kit",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A composable library for building multi-step flows in React Native — onboarding tours, feature walkthroughs, guided checklists, and more. Supports spotlight highlighting, contextual tooltips, scroll-aware steps, and flexible sequencing.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
