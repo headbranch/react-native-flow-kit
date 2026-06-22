@@ -153,7 +153,7 @@ export function Target({
         onLayout: mergeRefs((children as any).props?.onLayout, handleLayout),
         style: StyleSheet.flatten([
           (children as any).props?.style,
-          isActive && { opacity: 0 },
+          isActive && needsModal && { opacity: 0 },
         ]),
       })
     : children;
@@ -280,10 +280,10 @@ export function Target({
     );
   };
 
-  if (needsModal) {
-    return (
-      <>
-        {child}
+  return (
+    <>
+      {child}
+      {needsModal && isActive && (
         <Modal
           transparent={true}
           statusBarTranslucent
@@ -319,9 +319,7 @@ export function Target({
             )}
           </View>
         </Modal>
-      </>
-    );
-  }
-
-  return children;
+      )}
+    </>
+  );
 }
