@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   fabText: { color: '#fff', fontSize: 28 },
 
   welcomeOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.5)',
     alignItems: 'center',
     justifyContent: 'center',

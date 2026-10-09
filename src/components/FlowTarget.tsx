@@ -214,7 +214,7 @@ export function Target({
     if (SvgModule) {
       const { Svg, Path } = SvgModule;
       return (
-        <Svg style={StyleSheet.absoluteFillObject}>
+        <Svg style={StyleSheet.absoluteFill}>
           <Path
             fillRule="evenodd"
             clipRule="evenodd"
